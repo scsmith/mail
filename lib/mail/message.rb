@@ -128,6 +128,11 @@ module Mail
       else
         init_with_string(args.flatten[0].to_s)
       end
+      
+      # Set the body charset to the header charset if present
+      if has_charset?
+        body.charset = charset
+      end
 
       if block_given?
         instance_eval(&block)
@@ -2112,7 +2117,7 @@ module Mail
       if body_content
         self.body = body_content
         if has_content_transfer_encoding?
-            body.encoding = content_transfer_encoding
+          body.encoding = content_transfer_encoding
         end
       end
     end
