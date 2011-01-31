@@ -177,7 +177,13 @@ module Mail
       if !Encodings.defined?(encoding)
         raise UnknownEncodingType, "Don't know how to decode #{encoding}, please call #encoded and decode it yourself."
       else
-        Encodings.get_encoding(encoding).decode(raw_source)
+        str = Encodings.get_encoding(encoding).decode(raw_source)
+        
+        # Encode the string to the specified charset if we understand encoding (> 1.9) and we have something to encode to
+        str.force_encoding(@charset) if defined?(Encoding) && charset && charset != "US-ASCII"
+        
+        # make sure we explicitly return the string
+        str
       end
     end
     
