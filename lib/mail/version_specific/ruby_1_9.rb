@@ -140,6 +140,10 @@ module Mail
     def Ruby19.uri_parser
       @uri_parser ||= URI::Parser.new
     end
+    
+    def Ruby19.force_encoding(str, charset)
+      str.force_encoding(fix_encoding(charset))
+    end
 
     # Pick a Ruby encoding corresponding to the message charset. Most
     # charsets have a Ruby encoding, but some need manual aliasing here.
