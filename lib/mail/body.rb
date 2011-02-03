@@ -177,8 +177,11 @@ module Mail
       else
         str = Encodings.get_encoding(encoding).decode(raw_source)
         
-        # Encode the string to the specified charset if we understand encoding (> 1.9) and we have something to encode to
-        str.force_encoding(@charset) if defined?(Encoding) && charset && charset != "US-ASCII"
+        # remove a bug where the content type encoding is passed in charset
+        charset.gsub!(/content-transfer-encoding:?.*$/, '')
+        
+        # Encode the string to the specified charset if we have something to encode to
+        Encodings.force_encoding(str, charset) if charset && charset != "US-ASCII"
         
         # make sure we explicitly return the string
         str
