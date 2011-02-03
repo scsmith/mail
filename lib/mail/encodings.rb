@@ -339,5 +339,9 @@ module Mail
 
       yield RubyVer.string_byteslice(str, offset, chunksize)
     end
+
+    def Encodings.force_encoding(str, charset)
+      RubyVer.force_encoding(str, charset)
+    end
   end
 end
