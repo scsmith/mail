@@ -115,5 +115,9 @@ module Mail
         encoding
       end
     end
+
+    def Ruby18.force_encoding(str, charset)
+      str # don't do anything in 1.8
+    end
   end
 end
