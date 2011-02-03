@@ -283,5 +283,9 @@ module Mail
 
       results
     end
+
+    def Encodings.force_encoding(str, charset)
+      RubyVer.force_encoding(str, charset)
+    end
   end
 end
