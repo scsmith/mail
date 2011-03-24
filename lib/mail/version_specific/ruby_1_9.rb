@@ -138,7 +138,12 @@ module Mail
     end
 
     def Ruby19.force_encoding(str, charset)
-      str.force_encoding(pick_encoding(charset))
+      begin
+        str.force_encoding(pick_encoding(charset))
+      rescue
+        warn "encoding unknown #{charset}"
+      end
+      str
     end
 
     # Pick a Ruby encoding corresponding to the message charset. Most
