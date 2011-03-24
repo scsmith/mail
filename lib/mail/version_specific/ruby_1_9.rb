@@ -95,9 +95,9 @@ module Mail
     def Ruby19.uri_parser
       @uri_parser ||= URI::Parser.new
     end
-    
+
     def Ruby19.force_encoding(str, charset)
-      str.force_encoding(fix_encoding(charset))
+      str.force_encoding(pick_encoding(charset))
     end
 
     # Pick a Ruby encoding corresponding to the message charset. Most
@@ -107,6 +107,9 @@ module Mail
     #   Encoding.list.map { |e| [e.to_s.upcase == pick_encoding(e.to_s.downcase.gsub("-", "")), e.to_s] }.select {|a,b| !b}
     #   Encoding.list.map { |e| [e.to_s == pick_encoding(e.to_s), e.to_s] }.select {|a,b| !b}
     def Ruby19.pick_encoding(charset)
+      # Quoted strings incorrectly coming back from the parser
+      charset = charset.gsub(/^\"(.*)\".*/i, '\1')
+
       case charset
 
       # ISO-8859-15, ISO-2022-JP and alike
@@ -139,6 +142,10 @@ module Mail
       # GB2312 (Chinese charset) is a subset of GB18030 (its replacement)
       when /gb2312/i
         Encoding::GB18030
+
+      # Aliases for US-ASCII
+      when 'ISO646-US'
+        Encoding::ASCII
 
       else
         charset
