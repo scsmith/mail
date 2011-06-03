@@ -55,8 +55,13 @@ module Mail
         str = Ruby19.decode_base64(match[2])
         str.force_encoding(pick_encoding(charset))
       end
-      decoded = str.encode("utf-8", :invalid => :replace, :replace => "")
-      decoded.valid_encoding? ? decoded : decoded.encode("utf-16le", :invalid => :replace, :replace => "").encode("utf-8")
+      begin
+        decoded = str.encode("utf-8", :invalid => :replace, :replace => "")
+        decoded.valid_encoding? ? decoded : decoded.encode("utf-16le", :invalid => :replace, :replace => "").encode("utf-8")
+      rescue => e
+        warn "Error encoding string #{e.message} reverting to the original value"
+        str
+      end
     end
 
     def Ruby19.q_value_encode(str, encoding = nil)
