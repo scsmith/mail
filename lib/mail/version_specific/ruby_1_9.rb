@@ -53,7 +53,7 @@ module Mail
       if match
         charset = match[1]
         str = Ruby19.decode_base64(match[2])
-        str.force_encoding(pick_encoding(charset))
+        force_encoding(str, pick_encoding(charset))
       end
       begin
         decoded = str.encode("utf-8", :invalid => :replace, :replace => "")
@@ -77,7 +77,7 @@ module Mail
         # Remove trailing = if it exists in a Q encoding
         string = string.sub(/\=$/, '')
         str = Encodings::QuotedPrintable.decode(string)
-        str.force_encoding(pick_encoding(charset))
+        force_encoding(str, pick_encoding(charset))
       end
       decoded = str.encode("utf-8", :invalid => :replace, :replace => "")
       decoded.valid_encoding? ? decoded : decoded.encode("utf-16le", :invalid => :replace, :replace => "").encode("utf-8")

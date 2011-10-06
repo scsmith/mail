@@ -5,6 +5,12 @@ describe "Ruby 1.9 Extensions" do
 
   describe "pick_encoding" do
 
+    it "should not raise an error when sent an invalid encoding and return as is" do
+      lambda do
+        Mail::Ruby19.pick_encoding("foo", "random_encoding").should == "foo"
+      end.should_not raise_exception
+    end
+
     it "should replace \"iso-8859-1\"content-transfer-encoding: with iso-8859-1" do
       Mail::Ruby19.pick_encoding("\"iso-8859-1\"content-transfer-encoding: with iso-8859-1").should == "ISO-8859-1"
     end
