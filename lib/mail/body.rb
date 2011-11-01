@@ -45,8 +45,14 @@ module Mail
           raise "You can only assign a string or an object that responds_to? :join or :to_s to a body."
         end
       end
-      @encoding = (only_us_ascii? ? '7bit' : '8bit')
-      set_charset
+      
+      # At the moment only_us_ascii is an expensive call and it only appears needed when creating a new body.
+      # We currently set the charset from the message header and can assume all body's are 7bit for now as we're not sending.
+      # @encoding = (only_us_ascii? ? '7bit' : '8bit')
+      # @charset = only_us_ascii? ? 'US-ASCII' : nil
+      
+      @encoding = '7bit'
+      @charset = 'US-ASCII'
     end
     
     # Matches this body with another body.  Also matches the decoded value of this
@@ -179,7 +185,7 @@ module Mail
         str = Encodings.get_encoding(encoding).decode(raw_source)
         
         # remove a bug where the content type encoding is passed in charset
-        charset.gsub!(/content-transfer-encoding:?.*$/, '')
+        charset_to_force = charset.nil? ? nil : charset.gsub!(/content-transfer-encoding:?.*$/, '')
         
         # Encode the string to the specified charset if we have something to encode to
         Encodings.force_encoding(str, charset) if charset && charset != "US-ASCII"
@@ -277,6 +283,10 @@ module Mail
     end
 
     def only_us_ascii?
+      @only_us_ascii ||= check_ascii
+    end
+    
+    def check_ascii
       !(raw_source =~ /[^\x01-\x7f]/)
     end
     
@@ -315,10 +325,6 @@ module Mail
     
     def end_boundary
       "\r\n--#{boundary}--\r\n"
-    end
-    
-    def set_charset
-      only_us_ascii? ? @charset = 'US-ASCII' : @charset = nil
     end
   end
 end
