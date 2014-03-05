@@ -141,8 +141,8 @@ module Mail
     def Ruby19.force_encoding(str, charset)
       begin
         str.force_encoding(pick_encoding(charset))
-      rescue
-        warn "encoding unknown #{charset}"
+      rescue => e
+        warn "encoding unknown #{charset} #{e}"
       end
       str
     end
@@ -154,6 +154,8 @@ module Mail
     #   Encoding.list.map { |e| [e.to_s.upcase == pick_encoding(e.to_s.downcase.gsub("-", "")), e.to_s] }.select {|a,b| !b}
     #   Encoding.list.map { |e| [e.to_s == pick_encoding(e.to_s), e.to_s] }.select {|a,b| !b}
     def Ruby19.pick_encoding(charset)
+      return charset if charset.instance_of?(Encoding)
+
       charset = charset.to_s
       encoding = case charset.downcase
 
