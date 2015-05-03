@@ -67,7 +67,6 @@ describe Mail::CommonField do
       expect(field.encoded).to eq result
       expect(field.decoded).to eq value
     end
-
   end
 
   context "when including the field name" do
