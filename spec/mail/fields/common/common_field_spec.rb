@@ -66,7 +66,18 @@ describe Mail::CommonField do
       field.encoded.should eq result
       field.decoded.should eq value
     end
-    
+
+    it "adds quotes to unquoted filenames starting with a space" do
+      value = "Content-Disposition: Attachment; Filename= file_name"
+      field = Mail::ContentDispositionField.new(value)
+      field.filename.should eq "file_name"
+    end
+
+    it "adds quotes to unquoted encoded filenames starting with a space" do
+      value = "Content-Disposition: Attachment; Filename= =?utf-8?Q?My=20Attachment=2Ezip?="
+      field = Mail::ContentDispositionField.new(value)
+      field.filename.should eq "=?utf-8?Q?My=20Attachment=2Ezip?="
+    end
   end
 
 end
