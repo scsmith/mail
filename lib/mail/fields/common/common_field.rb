@@ -41,9 +41,11 @@ module Mail
     private
 
     FILENAME_RE = /\b(filename|name)=([^;"\r\n]+\s[^;"\r\n]+)/
+    SPACE_RE = /\b(filename|name)=\s([^;"\r\n]+)/
     def ensure_filename_quoted(value)
-      if value.is_a?(String)
-        value.sub FILENAME_RE, '\1="\2"'
+      if value.is_a?(String) | (value.respond_to?(:acts_like?) && value.acts_like?(:string))
+        filename_quoted = value.sub FILENAME_RE, '\1="\2"'
+        filename_quoted.sub SPACE_RE, '\1="\2"'
       else
         value
       end
